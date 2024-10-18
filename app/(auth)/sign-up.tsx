@@ -225,7 +225,6 @@ const SignUp = () => {
             <Text className="px-2">Profile Picture</Text>
             {form.avatar ? (
               <View
-                onPress={pickAvatar}
                 className="h-80 w-full justify-center items-center rounded-3xl"
                 style={{ backgroundColor: theme.colors.elevation.level1 }}
               >

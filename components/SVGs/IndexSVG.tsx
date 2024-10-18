@@ -1,11 +1,12 @@
 import { useMaterial3Theme } from "@pchmn/expo-material3-theme"
+import { color } from "@rneui/themed/dist/config";
 import * as React from "react"
 import { useTheme } from "react-native-paper"
 import Svg, { Path, Ellipse, G, SvgProps } from "react-native-svg"
-import { MD3DarkTheme, MD3LightTheme, PaperProvider } from "react-native-paper";
 
 function IndexSVG(props:SvgProps) {
-    const theme = {...MD3LightTheme}
+    const {theme:{light}} = useMaterial3Theme();
+    const theme = {colors: light}
     const syncTheme = useTheme()
   return (
     <Svg
@@ -33,7 +34,7 @@ function IndexSVG(props:SvgProps) {
       />
       <Path
         d="M341.443 171.628H171.017c-7.841 0-14.198 7.149-14.198 15.968v121.036c0 8.819 6.357 15.968 14.198 15.968h61.811l23.403 28.795 20.602-28.795h64.611c7.841 0 14.198-7.149 14.198-15.968V187.596c-.002-8.819-6.358-15.968-14.199-15.968z"
-        fill="#e07575"
+        fill="#e07576"
       />
       <Path
         d="M302.762 238.894l-.009-.001c.105-.899.173-1.808.173-2.735 0-12.921-10.475-23.396-23.396-23.396-12.669 0-22.96 7.005-23.358 19.577l-.076-.006c-.401-12.57-10.691-19.571-23.358-19.571-12.921 0-23.396 10.475-23.396 23.396a23.287 23.287 0 005.225 14.725l-.003.003.019.017c1.475 1.814 7.66 9.182 9.608 10.485l31.943 27.409 32.619-28.345c3.024-2.797 7.527-7.798 9.077-9.744l.045-.041.018-.043a23.255 23.255 0 004.854-11.699l.015-.031z"

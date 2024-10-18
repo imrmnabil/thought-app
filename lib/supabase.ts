@@ -3,7 +3,8 @@ import "react-native-url-polyfill/auto";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createClient } from "@supabase/supabase-js";
 import { SignupFormState } from "@/app/(auth)/sign-up";
-import { decode } from 'base64-arraybuffer';
+import { decode } from "base64-arraybuffer";
+import { Database } from "@/database.types";
 
 interface userProfileProps {
   handle: string;
@@ -21,7 +22,7 @@ export const supabaseConfig = {
 
 const { supabaseUrl, supabaseKey } = supabaseConfig;
 
-export const supabase = createClient(supabaseUrl, supabaseKey, {
+export const supabase = createClient<Database>(supabaseUrl, supabaseKey, {
   auth: {
     storage: AsyncStorage,
     autoRefreshToken: true,
@@ -89,23 +90,28 @@ export const getUserProfile = async (userId: string) => {
       .select()
       .eq("id", userId);
     if (error) throw new Error(error.message);
-    return profile
+    return profile;
   } catch (error: any) {
     Alert.alert("Error", error.message);
   }
 };
 
-export const uploadFile = async (bucket: string, path: string, mimeType:string, file: any) => {
+export const uploadFile = async (
+  bucket: string,
+  path: string,
+  mimeType: string,
+  file: any
+) => {
   console.log("Trying upload");
   try {
     const fileBase64 = decode(file.base64);
-    console.log(fileBase64)
+    console.log(fileBase64);
     const { data, error } = await supabase.storage
       .from(bucket)
       .upload(path, fileBase64, {
         cacheControl: "3600",
         upsert: false,
-        contentType: mimeType
+        contentType: mimeType,
       });
     if (error) throw new Error(error.message);
     return data.path;
@@ -130,8 +136,8 @@ export const createUserProfile = async (
       })
       .eq("id", userId);
     if (error) throw new Error(error.message);
-  } catch (error:any) {
-    Alert.alert("From Create User Profile",error.message);
+  } catch (error: any) {
+    Alert.alert("From Create User Profile", error.message);
   }
 };
 
@@ -184,4 +190,14 @@ export const signUpProcess = async ({
 const getFileExtension = (mimeType: string): string | null => {
   const parts = mimeType.split("/");
   return parts.length === 2 ? parts[1] : null;
+};
+
+export const getAllPosts = async () => {
+  try {
+    let { data: posts, error } = await supabase.from("posts").select("*");
+    if (error) throw new Error(error.message);
+    return posts;
+  } catch (error: any) {
+    Alert.alert(error.message);
+  }
 };

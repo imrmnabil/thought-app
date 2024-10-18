@@ -5,17 +5,16 @@ import { useGlobalContext } from "@/context/GlobalProvider";
 import { getUserProfile, signOut } from "@/lib/supabase";
 import { Redirect, router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Database } from "@/database.types";
+
+type Profile = Database['public']['Tables']['profiles']['Row']
 
 const Profile = () => {
-  const { session, setSession, setIsLoggedIn } = useGlobalContext();
-  const [profile, setProfile] = useState<any>(null);
-
-  if (session) {
-    getUserProfile(session.user.id).then((result: any) => {
-      // console.log("result: ",result)
-      if (result) setProfile(result[0]);
-    });
+  const globalContext = useGlobalContext();
+  if (!globalContext) {
+    return <Redirect href='/home' />
   }
+  const { session, setSession, setIsLoggedIn, profile } = globalContext;
 
   const submit = async () => {
     try {
@@ -36,7 +35,7 @@ const Profile = () => {
             <Image
               width={140}
               height={140}
-              source={{ uri: profile?.avatar_url }}
+              source={{ uri: profile?.avatar_url ?? 'https://wqwzllsqpfeifnbmmcmh.supabase.co/storage/v1/object/public/avatars/default.png' }}
             />
           </View>
           <Text className="text-3xl font-semibold">{profile?.full_name}</Text>

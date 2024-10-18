@@ -1,4 +1,5 @@
-import { supabase } from "@/lib/supabase";
+import { Database } from "@/database.types";
+import { getUserProfile, supabase } from "@/lib/supabase";
 import { Session } from "@supabase/supabase-js";
 import {
   createContext,
@@ -19,26 +20,30 @@ type GlobalContextType = {
   setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
   isLoading: boolean;
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
-  checkSessionState: ()=>void;
-}
+  checkSessionState: () => void;
+  profile: Profile | null;
+  setProfile: React.Dispatch<React.SetStateAction<Profile | null>>;
+};
+type Profile = Database["public"]["Tables"]["profiles"]["Row"];
 
-const GlobalContext = createContext<GlobalContextType|null>(null);
+const GlobalContext = createContext<GlobalContextType | null>(null);
 
 export const useGlobalContext = () => useContext(GlobalContext);
-export type {GlobalContextType}
+export type { GlobalContextType };
 
 const GlobalProvider = ({ children }: Props) => {
   const [session, setSession] = useState<Session | null>(null);
+  const [profile, setProfile] = useState<Profile | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   const checkSessionState = () => {
-    setIsLoading(true)
+    setIsLoading(true);
     supabase.auth
       .getSession()
       .then(({ data: { session } }) => {
         setSession(session);
-        if(session) setIsLoggedIn(true);
+        if (session) setIsLoggedIn(true);
       })
       .catch((error) => {
         console.log(error.message);
@@ -50,11 +55,23 @@ const GlobalProvider = ({ children }: Props) => {
     supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
     });
-  }
+  };
+
+  const checkProfileState = () => {
+    if (session) {
+      getUserProfile(session.user.id).then((result) => {
+        if (result) setProfile(result[0]);
+      });
+    }
+  };
 
   useEffect(() => {
-    checkSessionState()
+    checkSessionState();
   }, []);
+
+  useEffect(()=> {
+    checkProfileState();
+  },[session])
 
   return (
     <GlobalContext.Provider
@@ -65,7 +82,9 @@ const GlobalProvider = ({ children }: Props) => {
         setIsLoggedIn,
         isLoading,
         setIsLoading,
-        checkSessionState
+        checkSessionState,
+        profile,
+        setProfile,
       }}
     >
       {children}
@@ -73,4 +92,4 @@ const GlobalProvider = ({ children }: Props) => {
   );
 };
 
-export default GlobalProvider
+export default GlobalProvider;
