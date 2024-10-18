@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Alert,
+  Image,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import InputeTextField from "@/components/InputTextField";
@@ -17,12 +18,12 @@ import {
   useTheme,
 } from "react-native-paper";
 import { Redirect, router } from "expo-router";
-import { signUpWithEmail } from "@/lib/supabase";
+import { signUpProcess, signUpWithEmail } from "@/lib/supabase";
 import { useGlobalContext } from "@/context/GlobalProvider";
 import * as ImagePicker from "expo-image-picker";
 import DateTimePicker from "@react-native-community/datetimepicker";
 
-type FormState = {
+export type SignupFormState = {
   handle: string;
   email: string;
   password: string;
@@ -33,27 +34,49 @@ type FormState = {
 };
 
 const SignUp = () => {
-  const [form, setForm] = useState<FormState>({
+  const today = new Date();
+  const eighteenYearsAgo = new Date(
+    today.setFullYear(today.getFullYear() - 18)
+  );
+  const [form, setForm] = useState<SignupFormState>({
     handle: "",
     email: "",
     password: "",
     avatar: null,
     fullname: "",
-    date_of_birth: new Date(1598051730000),
+    date_of_birth: eighteenYearsAgo,
     gender: "male",
   });
   const theme = useTheme();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const { checkSessionState, isLoading, isLoggedIn } = useGlobalContext();
+  const { checkSessionState, isLoading, isLoggedIn, session } =
+    useGlobalContext();
 
   const submit = async () => {
-    if (!(form.email && form.password)) {
+    // !(
+    //   form.email &&
+    //   form.password &&
+    //   form.handle &&
+    //   form.avatar &&
+    //   form.date_of_birth &&
+    //   form.gender
+    // )
+    if (
+      !(
+        form.email &&
+        form.password &&
+        form.handle &&
+        form.avatar &&
+        form.date_of_birth &&
+        form.gender
+      )
+    ) {
       Alert.alert("Error", "Please type all the fields!");
     } else {
       setIsSubmitting(true);
       try {
-        await signUpWithEmail(form.email, form.password);
+        await signUpProcess(form);
         checkSessionState();
       } catch (error: any) {
         Alert.alert("Error", error.message);
@@ -68,8 +91,14 @@ const SignUp = () => {
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       quality: 1,
+      aspect: [1, 1],
+      base64:true,
     });
-    console.log(result);
+    if (result.canceled) {
+      Alert.alert("Canceled");
+    } else {
+      setForm({ ...form, avatar: result.assets[0] });
+    }
   };
   useEffect(() => {
     if (!isLoading && isLoggedIn) {
@@ -149,6 +178,7 @@ const SignUp = () => {
                   testID="dateTimePicker"
                   value={form.date_of_birth}
                   mode={"date"}
+                  maximumDate={eighteenYearsAgo}
                   is24Hour={true}
                   onChange={(event, date) => {
                     setShowDatePicker(false);
@@ -197,7 +227,15 @@ const SignUp = () => {
               className="h-40 w-full justify-center items-center rounded-3xl"
               style={{ backgroundColor: theme.colors.surfaceVariant }}
             >
-              <Icon source="camera" size={40} />
+              {form.avatar ? (
+                <Image
+                  width={40}
+                  height={40}
+                  source={{ uri: form.avatar.uri }}
+                />
+              ) : (
+                <Icon source="camera" size={40} />
+              )}
               <Text>Upload an Image</Text>
             </TouchableOpacity>
           </View>

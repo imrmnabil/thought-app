@@ -15,7 +15,6 @@ const RootLayout = () => {
     colorScheme === "dark"
       ? { ...MD3DarkTheme, colors: theme.dark }
       : { ...MD3LightTheme, colors: theme.light };
-  console.log(theme.light.primary);
   return (
     <GlobalProvider>
       <PaperProvider theme={paperTheme}>
