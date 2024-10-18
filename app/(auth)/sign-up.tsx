@@ -13,6 +13,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import {
   Button,
   Icon,
+  IconButton,
   SegmentedButtons,
   Text,
   useTheme,
@@ -92,7 +93,7 @@ const SignUp = () => {
       allowsEditing: true,
       quality: 1,
       aspect: [1, 1],
-      base64:true,
+      base64: true,
     });
     if (result.canceled) {
       Alert.alert("Canceled");
@@ -222,22 +223,37 @@ const SignUp = () => {
           </View>
           <View className="h-fit w-full mt-7 space-y-2">
             <Text className="px-2">Profile Picture</Text>
-            <TouchableOpacity
-              onPress={pickAvatar}
-              className="h-40 w-full justify-center items-center rounded-3xl"
-              style={{ backgroundColor: theme.colors.surfaceVariant }}
-            >
-              {form.avatar ? (
-                <Image
-                  width={40}
-                  height={40}
-                  source={{ uri: form.avatar.uri }}
+            {form.avatar ? (
+              <View
+                onPress={pickAvatar}
+                className="h-80 w-full justify-center items-center rounded-3xl"
+                style={{ backgroundColor: theme.colors.elevation.level1 }}
+              >
+                <View className="h-60 w-60 rounded-full overflow-hidden">
+                  <Image
+                    className="h-full w-full"
+                    source={{ uri: form.avatar.uri }}
+                  />
+                  <TouchableOpacity className="absolute h-20 w-full bg-black/50 bottom-0 justify-center items-center" onPress={pickAvatar}>
+                    <Icon size={40} source="camera" color="#999999" />
+                  </TouchableOpacity>
+                </View>
+                <IconButton
+                  icon="close"
+                  className="absolute top-2 right-2"
+                  onPress={() => setForm({ ...form, avatar: null })}
                 />
-              ) : (
+              </View>
+            ) : (
+              <TouchableOpacity
+                onPress={pickAvatar}
+                className="h-40 w-full justify-center items-center rounded-3xl"
+                style={{ backgroundColor: theme.colors.surfaceVariant }}
+              >
                 <Icon source="camera" size={40} />
-              )}
-              <Text>Upload an Image</Text>
-            </TouchableOpacity>
+                <Text>Upload an Image</Text>
+              </TouchableOpacity>
+            )}
           </View>
           <View className="h-fit w-full mt-7">
             <Button

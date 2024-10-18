@@ -89,7 +89,7 @@ export const getUserProfile = async (userId: string) => {
       .select()
       .eq("id", userId);
     if (error) throw new Error(error.message);
-    console.log(profile);
+    return profile
   } catch (error: any) {
     Alert.alert("Error", error.message);
   }
