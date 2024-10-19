@@ -194,7 +194,9 @@ const getFileExtension = (mimeType: string): string | null => {
 
 export const getAllPosts = async () => {
   try {
-    let { data: posts, error } = await supabase.from("posts").select("*");
+    let { data: posts, error } = await supabase
+      .from("posts")
+      .select(`*, profiles("*")`).order('created_at',{ascending: false});
     if (error) throw new Error(error.message);
     return posts;
   } catch (error: any) {

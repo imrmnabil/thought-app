@@ -17,7 +17,7 @@ const AppBar = ({ avatar_url }: Props) => {
   }
   return (
     <Appbar.Header style={{}}>
-      <Appbar.Content title="Thought" titleStyle={{fontFamily:'Poppins_600SemiBold'}}/>
+      <Appbar.Content title=".Mind" titleStyle={{fontFamily:'Poppins_600SemiBold'}}/>
       <TouchableOpacity className="h-fit w-fit rounded-full overflow-hidden mr-4">
         <Image
           height={40}
