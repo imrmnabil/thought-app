@@ -98,6 +98,7 @@ const SignIn = () => {
               }}
               disabled={isSubmitting}
               onPress={submit}
+              loading={isSubmitting}
             >
               Log In
             </Button>

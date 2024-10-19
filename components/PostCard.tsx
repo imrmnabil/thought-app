@@ -7,6 +7,7 @@ import {
   Image,
   Dimensions,
   TouchableOpacity,
+  TouchableHighlight,
 } from "react-native";
 import { Avatar, Button, Card, IconButton, useTheme } from "react-native-paper";
 import { Post } from "@/app/(tabs)/home";
@@ -18,6 +19,7 @@ import {
   HeartIcon,
 } from "react-native-heroicons/outline";
 import { formatDistanceToNow } from "date-fns";
+import { Icon } from "@rneui/themed";
 
 interface Props {
   post: Post;
@@ -29,6 +31,10 @@ const LeftContent = ({ image }: any) => (
 
 const PostCard = ({ post }: Props) => {
   const theme = useTheme();
+  const iconStyle = {
+    size: 30,
+    color:theme.colors.onPrimaryContainer,
+  };
   const profile = post?.profiles;
   const [imageRatio, setImageRatio] = useState(0);
   useEffect(() => {
@@ -47,22 +53,23 @@ const PostCard = ({ post }: Props) => {
     });
   }
   return (
-    <Card mode="elevated" style={{ backgroundColor:theme.colors.background }} contentStyle={{ padding: 0 }}>
+    <Card
+      mode="elevated"
+      style={{ backgroundColor: theme.colors.background }}
+      contentStyle={{ padding: 0 }}
+    >
       <View className="flex-row justify-between w-full px-3 py-4">
         <View className="flex-row flex-1 space-x-2">
           <LeftContent image={profile?.avatar_url} />
           <View>
-            <Text className="font-semibold text-lg">
-              {profile?.full_name}
-            </Text>
+            <Text className="font-semibold text-lg">{profile?.full_name}</Text>
             {/* <Text>{`@${profile?.username}`}</Text> */}
             <Text className="text-xs">{timeAgo}</Text>
           </View>
         </View>
-        <EllipsisVerticalIcon
-              size={iconStyle.size}
-              color={theme.colors.onBackground}
-            />
+        <TouchableHighlight className="p-1 rounded-full aspect-square justify-center items-center" underlayColor={theme.colors.primaryContainer} onPress={()=>{}}>
+          <Icon name="ellipsis-horizontal-outline" type="ionicon" {...iconStyle} />
+        </TouchableHighlight>
       </View>
       <View className="px-4 pb-4">
         <Text className="text-base">{post?.body}</Text>
@@ -85,26 +92,21 @@ const PostCard = ({ post }: Props) => {
         id="imageContainer"
       >
         <View className="flex-row space-x-2">
-          <TouchableOpacity>
-            <HeartIcon size={iconStyle.size} color={theme.colors.onBackground} />
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <ChatBubbleOvalLeftIcon
-              size={iconStyle.size}
-              color={theme.colors.onBackground}
-            />
-          </TouchableOpacity>
+          <TouchableHighlight className="p-1 rounded-full" underlayColor={theme.colors.primaryContainer} onPress={()=>{}}>
+            <Icon name="heart-outline" type="ionicon" {...iconStyle} />
+          </TouchableHighlight >
+          <TouchableHighlight className="p-1 rounded-full" underlayColor={theme.colors.primaryContainer} onPress={()=>{}}>
+            <Icon name="chatbox-outline" type="ionicon" {...iconStyle} />
+          </TouchableHighlight>
         </View>
-        <TouchableOpacity>
-          <BookmarkIcon size={iconStyle.size} color={theme.colors.onBackground} />
-        </TouchableOpacity>
+        <TouchableHighlight className="p-1 rounded-full" underlayColor={theme.colors.primaryContainer} onPress={()=>{}}>
+          <Icon name="bookmark-outline" type="ionicon" {...iconStyle} />
+        </TouchableHighlight>
       </View>
     </Card>
   );
 };
 
-const iconStyle = {
-  size: 30,
-};
+
 
 export default PostCard;

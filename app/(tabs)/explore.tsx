@@ -1,12 +1,14 @@
 import { View } from 'react-native'
 import { Text } from 'react-native-paper'
 import React from 'react'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import SearchBar from '@/components/SearchBar'
 
 const Explore= () => {
   return (
-    <View className='h-full w-full justify-center items-center'>
-      <Text className='text-3xl'>Explore</Text>
-    </View>
+    <SafeAreaView className='h-full w-full px-4 my-2'>
+      <SearchBar/>
+    </SafeAreaView>
   )
 }
 
