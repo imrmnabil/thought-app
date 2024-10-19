@@ -14,8 +14,10 @@ import { useEffect, useState } from "react";
 import {
   BookmarkIcon,
   ChatBubbleOvalLeftIcon,
+  EllipsisVerticalIcon,
   HeartIcon,
 } from "react-native-heroicons/outline";
+import { formatDistanceToNow } from "date-fns";
 
 interface Props {
   post: Post;
@@ -37,15 +39,30 @@ const PostCard = ({ post }: Props) => {
       });
     }
   }, [post?.image_url]);
-  console.log(post?.image_url);
+
+  let timeAgo;
+  if (post?.created_at) {
+    timeAgo = formatDistanceToNow(new Date(post?.created_at), {
+      addSuffix: true,
+    });
+  }
   return (
-    <Card mode="elevated" style={{ padding: 0 }} contentStyle={{ padding: 0 }}>
-      <View className="flex-row w-full px-3 py-4 space-x-2">
-        <LeftContent image={profile?.avatar_url} />
-        <View>
-          <Text className="font-semibold text-base">{profile?.full_name}</Text>
-          <Text>{`@${profile?.username}`}</Text>
+    <Card mode="elevated" style={{ backgroundColor:theme.colors.background }} contentStyle={{ padding: 0 }}>
+      <View className="flex-row justify-between w-full px-3 py-4">
+        <View className="flex-row flex-1 space-x-2">
+          <LeftContent image={profile?.avatar_url} />
+          <View>
+            <Text className="font-semibold text-lg">
+              {profile?.full_name}
+            </Text>
+            {/* <Text>{`@${profile?.username}`}</Text> */}
+            <Text className="text-xs">{timeAgo}</Text>
+          </View>
         </View>
+        <EllipsisVerticalIcon
+              size={iconStyle.size}
+              color={theme.colors.onBackground}
+            />
       </View>
       <View className="px-4 pb-4">
         <Text className="text-base">{post?.body}</Text>
@@ -69,17 +86,17 @@ const PostCard = ({ post }: Props) => {
       >
         <View className="flex-row space-x-2">
           <TouchableOpacity>
-            <HeartIcon size={iconStyle.size} color={theme.colors.outline} />
+            <HeartIcon size={iconStyle.size} color={theme.colors.onBackground} />
           </TouchableOpacity>
           <TouchableOpacity>
             <ChatBubbleOvalLeftIcon
               size={iconStyle.size}
-              color={theme.colors.outline}
+              color={theme.colors.onBackground}
             />
           </TouchableOpacity>
         </View>
         <TouchableOpacity>
-          <BookmarkIcon size={iconStyle.size} color={theme.colors.outline} />
+          <BookmarkIcon size={iconStyle.size} color={theme.colors.onBackground} />
         </TouchableOpacity>
       </View>
     </Card>

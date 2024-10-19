@@ -1,6 +1,6 @@
-import { View } from "react-native";
+import { RefreshControl, View } from "react-native";
 import { Text } from "react-native-paper";
-import React from "react";
+import React, { useState } from "react";
 import Auth from "@/components/Auth";
 import { useSupabase } from "@/lib/useSupabase";
 import { getAllPosts } from "@/lib/supabase";
@@ -32,11 +32,23 @@ const Home = () => {
   const { data, refetch } = useSupabase(getAllPosts);
   const posts = data as unknown as Post[] | null;
 
+
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    refetch().then(
+      ()=> {
+        setRefreshing(false)
+      }
+    )
+  }, []);
+
   return (
     <>
     <View className="h-full w-full">
     <AppBar avatar_url={profile?.avatar_url}/>
-      <ScrollView className="w-full">
+      <ScrollView className="w-full" refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}>
         <View className="w-full mt-4">
           {posts && posts.map((post, index)=>(
             <View key={index} className="mb-4 mx-2">
