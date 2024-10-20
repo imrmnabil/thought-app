@@ -89,12 +89,11 @@ const SignIn = () => {
           <View className="h-fit w-full mt-4">
             <Button
               className="w-full"
-              mode="contained"
+              mode='contained'
               contentStyle={{ paddingVertical: 4, alignItems: "center" }}
               labelStyle={{ fontSize: 18 }}
               style={{
                 borderRadius: 999,
-                backgroundColor: theme.colors.primary,
               }}
               disabled={isSubmitting}
               onPress={submit}
