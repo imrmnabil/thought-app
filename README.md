@@ -1,4 +1,4 @@
-# THOUGHT An Social Media App
+# THOUGHT A Social Media App
 Thought is a social media app I built using React Native and Expo. It focuses on meaningful connections and a simple design. This
 project highlights my skills in mobile app development.
  
